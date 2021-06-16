@@ -19,4 +19,6 @@ Features:
 - See Godbolt compile the code and Passing Google Tests
 - Enjoy!
 	
-	
+## TODO
+- Make it thread safe
+- Use Std::Fill instead of memset (Memset may blatter Vtables)
