@@ -53,6 +53,10 @@ class RingBuffer
   uint16_t m_back; // Where last element will be deleted from
   uint16_t m_count;
 
+  /**
+   * Constructor.  Instantiates ringbuffer with the given size.
+   * @param size : Number of elements that the ringbuffer will have
+   */
   void AdvanceIndex(uint16_t& ix)
   {
     if(++ix >= m_elements)
@@ -76,26 +80,47 @@ class RingBuffer
     delete[] m_ringbuffer.data();
   }
 
+  /**
+   * Returns position of ringbuffer FrontIndex.  This is the next spot that the ringbuffer will add the
+   * next element to.
+   * @return FrontIndex
+   */
   uint16_t GetFrontIx()
   {
     return m_front;
   }
 
+  /**
+   * Returns position of ringbuffer BackIndex (i.e.: last element)
+   * @return BackIndex
+   */
   uint16_t GetBackIx()
   {
     return m_back;
   }
 
+  /**
+   * Returns number of elements filled in the ringbuffer
+   * @return number of elements used
+   */
   uint16_t GetCount()
   {
     return m_count;
   }
 
+  /**
+   * Returns maximum elements that the ringbuffer can store
+   * @return ringbuffer storage limit
+   */
   uint16_t GetMaxElements()
   {
     return m_elements;
   }
 
+  /**
+   * Prints a visual representation of ringbuffer with front and back indexes and a passed in comment
+   * @param comment : String comment to be printed with the visual representation
+   */
   void Print(const char* comment)
   {
     for(auto& ptr : m_ringbuffer)
@@ -106,11 +131,18 @@ class RingBuffer
     std::cout << " " << comment << std::endl;
   }
 
+  /**
+   * Gets the raw span container that holds the data on the ringbuffer
+   * @return Span that holds the ringbuffer data.
+   */
   std::span<DataType> GetBuffer()
   {
     return m_ringbuffer;
   }
 
+  /**
+   * Test function to populate the entire ringbuffer with test ints
+   */
   void PopulateAll()
   {
     for(int i = 1; i <= m_elements; i++)
@@ -119,6 +151,14 @@ class RingBuffer
     }
   }
 
+  /**
+     * Add a copy of parameter to front of ringbuffer.
+     * Will advance FrontIndex of ringbuffer.  May advance BackIndex of ringbuffer if it is full.  Oldest
+     * value in the ringbuffer will be discarded in this case.
+     * @param val : A copy of this will be added to the ringbuffer
+     * @return True if an element was inserted to an empty slot on the ringbuffer. False if the back element of the
+     * ringbuffer was overwritten.
+     */
   bool Add(DataType val)
   {
     m_ringbuffer[m_front] = val;
@@ -137,12 +177,23 @@ class RingBuffer
     }
   }
 
+  /**
+   * Remove last element (oldest in the ringbuffer)
+   * Will advance the BackIndex to the ringbuffer
+   * @return True if an element was removed, else False
+   */
   bool Remove(void)
   {
     DataType tmpVal;
     return Remove(tmpVal);
   }
 
+  /**
+   * Remove last element (oldest in the ringbuffer) and return a copy via output parameter.
+   * Will advance the BackIndex to the ringbuffer
+   * @param outVal : Copy of removed element
+   * @return True if an element was removed and copied to outVal, else False
+   */
   bool Remove(DataType& outVal)
   {
     if(m_count > 0)
